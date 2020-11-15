@@ -19,6 +19,7 @@ public class newGame {
         printField();
         while (true) {
             gamerTurn();
+            System.out.println("Вы сделали ход:");
             printField();
             if (gameOver()) {
                 System.out.println("Ничья");
@@ -29,6 +30,7 @@ public class newGame {
                 break;
             }
             machineTurn();
+            System.out.println("Машина сделала ход:");
             printField();
             if (gameOver()) {
                 System.out.println("Ничья");
@@ -59,6 +61,7 @@ public class newGame {
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     public static void gamerTurn() {
