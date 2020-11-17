@@ -106,173 +106,87 @@ public class newGame {
 
 
     public static boolean win(char dot) {
-        int counter = 1;
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (field[i][j] == dot) {
-
-                    if (SIZE - j >= DOTS_DO_WIN) { //смотрим серию по горизонтали
-                        for (int k = 1; k < DOTS_DO_WIN; k++) {
-                            if (field[i][j + k] == dot) counter++;
-                            else {
-                                counter = 1;
-                                break;
-                            }
-                            if (counter == DOTS_DO_WIN) return true;
-                        }
-                    }
-
-                    if (SIZE - i >= DOTS_DO_WIN) { //смотрим серию по вертикали
-                        for (int k = 1; k < DOTS_DO_WIN; k++) {
-                            if (field[i + k][j] == dot) counter++;
-                            else {
-                                counter = 1;
-                                break;
-                            }
-                            if (counter == DOTS_DO_WIN) return true;
-                        }
-                    }
-
-                    if ((SIZE - i >= DOTS_DO_WIN) && (SIZE - j >= DOTS_DO_WIN)) { // Смотрим \-диагональ
-                        for (int k = 1; k < DOTS_DO_WIN; k++) {
-                            if (field[i + k][j + k] == dot) counter++;
-                            else {
-                                counter = 1;
-                                break;
-                            }
-                            if (counter == DOTS_DO_WIN) return true;
-                        }
-                    }
-
-                    if ((SIZE - i >= DOTS_DO_WIN) && (j + 1 >= DOTS_DO_WIN)) { // смотрим /-диагональ
-                        for (int k = 1; k < DOTS_DO_WIN; k++) {
-                            if (field[i + k][j - k] == dot) counter++;
-                            else {
-                                counter = 1;
-                                break;
-                            }
-                            if (counter == DOTS_DO_WIN) return true;
-                        }
-                    }
-
-
-                }
+                if (winCheck(i, j, 0, 1, dot)) return true;
+                if (winCheck(i, j, 1, 0, dot)) return true;
+                if (winCheck(i, j, 1, 1, dot)) return true;
+                if (winCheck(i, j, 1, -1, dot)) return true;
             }
         }
         return false;
     }
 
     public static boolean aiCanBeatYou() {
-
-
-        for (int i = 0; i < SIZE; i++) { //если в строке фишек игрока на 1 меньше, чем надо для победы, заполним строку
-            int counter = 0;
+        for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (field[i][j] == DOT_X) {
-                    counter++;
-                    if (DOTS_DO_WIN - counter < 2) {
-                        for (int k = 0; k < SIZE - 1; k++) {
-                            if (k != SIZE - 1 && field[i][k] == DOT_X && field[i][k + 1] == DOT_EMPTY) {
-                                field[i][k + 1] = DOT_O;
-                                return true;
-                            }
-                            if (k != 0 && field[i][k] == DOT_X && field[i][k - 1] == DOT_EMPTY) {
-                                field[i][k - 1] = DOT_O;
-                                return true;
-                            }
-                        }
-                    }
-                }
+                if (lineFill(i, j, 0, 1)) return true;//проверяем линию вправо
+                if (lineFill(i, j, 0, -1)) return true;//проверяем линию влево
+                if (lineFill(i, j, 1, 0)) return true;//столбец вправо
+                if (lineFill(i, j, -1, 0)) return true;//столбец влево
+                if (lineFill(i, j, 1, 1)) return true;//диагональ \ вниз
+                if (lineFill(i, j, -1, -1)) return true;//диагональ \ вверх
+                if (lineFill(i, j, 1, -1)) return true;//диагональ / вниз
+                if (lineFill(i, j, -1, 1)) return true;//диагональ / вверх
             }
         }
-
-        for (int i = 0; i < SIZE; i++) { //если в столбце фишек игрока на 1 меньше, чем надо для победы, заполним строку
-            int counter = 0;
-            for (int j = 0; j < SIZE; j++) {
-                if (field[j][i] == DOT_X) {
-                    counter++;
-                    if (DOTS_DO_WIN - counter < 2) {
-                        for (int k = 0; k < SIZE - 1; k++) {
-                            if (k != SIZE - 1 && field[k][i] == DOT_X && field[k + 1][i] == DOT_EMPTY) {
-                                field[k + 1][i] = DOT_O;
-                                return true;
-                            }
-                            if (k != 0 && field[k][i] == DOT_X && field[k - 1][i] == DOT_EMPTY) {
-                                field[k - 1][i] = DOT_O;
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < SIZE; i++) { //если в "\" диагонали фишек игрока на 1 меньше...
-            for (int j = 0; j < SIZE; j++) {
-                int counter = 0;
-                int counterOfEmpty = 0; //эта переменная считает, были ли у нас пустые поля до того, как мы нашли достаточно DOT_X
-                //причем если пустое поле будет между двумя DOT_X, это не ломает логику, мы просто будем итерировать вверх, а не вниз
-                for (int k = 0; k < SIZE - Math.max(i, j) && DOTS_DO_WIN - counter > 1; k++) {
-                    if (field[i + k][j + k] == DOT_X) counter++;
-                    if (field[i + k][j + k] == DOT_EMPTY) counterOfEmpty++;
-                }
-
-                if (DOTS_DO_WIN - counter < 2 && counterOfEmpty < 1) {
-                    for (int k = 1; k < SIZE - Math.max(i, j); k++) {
-                        if (field[i][j] == DOT_X && field[i + k][j + k] == DOT_EMPTY) {
-                            field[i + k][j + k] = DOT_O;
-                            return true;
-                        }
-                    }
-                }
-                if (DOTS_DO_WIN - counter < 2) {
-                    for (int k = 1; k <= Math.min(i, j); k++) {
-                        if (field[i][j] == DOT_X && field[i - k][j - k] == DOT_EMPTY) {
-                            field[i - k][j - k] = DOT_O;
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        char[][] fieldRotate = new char[SIZE][SIZE];
-        for (int i = 0; i < SIZE; i++) {//заполням доп. матрицу = нашему полю, повернутому влево на 90
-            for (int j = 0; j < SIZE; j++) {
-                fieldRotate[i][j] = field[j][SIZE - 1 - i];
-            }
-        }
-
-        for (int i = 0; i < SIZE; i++) {//если в "/" диагонали фишек игрока на 1 меньше...
-            for (int j = 0; j < SIZE; j++) {
-
-                int counter = 0;
-                int counterOfEmpty = 0;
-                for (int k = 0; k < SIZE - Math.max(i, j) && DOTS_DO_WIN - counter > 1; k++) {
-                    if (fieldRotate[i + k][j + k] == DOT_X) counter++;
-                    if (fieldRotate[i + k][j + k] == DOT_EMPTY) counterOfEmpty++;
-                }
-
-                if (DOTS_DO_WIN - counter < 2) {
-                    for (int k = 1; k < SIZE - Math.max(i, j); k++) {
-                        if (fieldRotate[i][j] == DOT_X && fieldRotate[i + k][j + k] == DOT_EMPTY) {
-                            field[j + k][SIZE - 1 - i - k] = DOT_O;
-                            return true;
-                        }
-                    }
-                }
-                if (DOTS_DO_WIN - counter < 2 && counterOfEmpty < 1) {
-                    for (int k = 1; k <= Math.min(i, j); k++) {
-                        if (fieldRotate[i][j] == DOT_X && fieldRotate[i - k][j - k] == DOT_EMPTY) {
-                            field[j - k][SIZE - 1 - i + k] = DOT_O;
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-
         return false;
     }
+
+    public static boolean lineFill(int i, int j, int vectorCol, int vectorRow) {
+        if (lineCheck(i, j, vectorCol, vectorRow)) {
+            for (int k = 1; k < SIZE; k++) {
+                int iNext = i + k * vectorCol;
+                int jNext = j + k * vectorRow;
+                if (iNext > SIZE - 1 || iNext < 0 || jNext > SIZE - 1 || jNext < 0) return false;
+                if (field[i][j] == DOT_X && field[iNext][jNext] == DOT_EMPTY) {
+                    field[iNext][jNext] = DOT_O;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean lineCheck(int i, int j, int vectorCol, int vectorRow) {
+        if (field[i][j] == DOT_X) {
+            int counter = 1;
+            for (int k = 1; k < SIZE; k++) {
+                int iNext = i + k * vectorCol;
+                int jNext = j + k * vectorRow;
+                if (iNext > SIZE - 1 || iNext < 0 || jNext > SIZE - 1 || jNext < 0) return false;
+                if (field[iNext][jNext] == DOT_X) counter++;
+                if (DOTS_DO_WIN - counter <= 1) return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean winCheck(int i, int j, int vectorCol, int vectorRow, char dot) {
+        if (field[i][j] == dot) {
+            int counter = 1;
+            for (int k = 1; k < SIZE; k++) {
+                int iNext = i + k * vectorCol;
+                int jNext = j + k * vectorRow;
+                if (iNext > SIZE - 1 || iNext < 0 || jNext > SIZE - 1 || jNext < 0) return false;
+                if (field[i][j] == dot && field[iNext][jNext] == dot) counter++;
+                else {
+                    counter = 1;
+                    break;
+                }
+                if (counter == DOTS_DO_WIN) return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
 }
+
+
+
+
+
