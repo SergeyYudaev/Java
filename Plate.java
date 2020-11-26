@@ -47,6 +47,7 @@ public class Plate {
                 plate.setFood(foodSize + increase);
                 filled = true;
                 printPlateInfo();
+
             } else {
                 System.out.println("Ты сейчас отобрал еду у котов?");
             }

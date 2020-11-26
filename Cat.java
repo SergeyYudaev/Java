@@ -9,11 +9,8 @@ public class Cat {
         this.appetite = appetite;
     }
 
-    //коты очень характерные и домашние, поэтому примем, что в рамках данной задачи
-    //голодный кот будет просить еду, пока мы его не накормим, т.к. охотиться не умеет
 
-
-    public void eat(Plate plate) {
+    public boolean eat(Plate plate) {
         if (plate.getFood() - this.appetite >= 0) {
             plate.decreaseFood(this.appetite);
             System.out.println(this.name + " съел из тарелки " + appetite + " единиц еды. Осталось еды в тарелке: " + plate.getFood());
@@ -21,10 +18,8 @@ public class Cat {
         } else {
             System.out.println("Коту " + this.name + " не хватило еды. Еды в тарелке:" + plate.getFood());
             fullness = false;
-            System.out.println(this);
-            plate.increaseFood(plate, plate.getFood());
-            eat(plate);
         }
+        return fullness;
     }
 
     @Override
@@ -36,5 +31,7 @@ public class Cat {
                 '}';
     }
 
-
+    public boolean isFullness() {
+        return fullness;
+    }
 }
