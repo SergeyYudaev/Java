@@ -9,24 +9,22 @@ public class Main {
             cats[i] = new Cat("Cat" + (i + 1), (i + 1) * 5);
         }
 
-        while (!checkCats(cats)) {
+        while (!checkCats(cats) && quest()) {
             plate1.increaseFood(plate1, plate1.getFood());
-            quest(cats, plate1);
+            feeding(cats, plate1);
         }
 
     }
 
-    static void quest(Cat[] cats, Plate plate) {
+    static boolean quest() {
         Scanner sc1 = new Scanner(System.in);
         System.out.print("Покормить котов? 1-да, 0-нет: ");
         int q;
         q = sc1.nextInt();
         System.out.println();
-        if (q == 1) {
-            feeding(cats, plate);
-
-        } else System.out.println("Пользователь не хочет кормить котов");
-
+        if (q == 1) return true;
+        else System.out.println("Пользователь не хочет кормить котов");
+        return false;
     }
 
     static void feeding(Cat[] cats, Plate plate) {
@@ -50,5 +48,4 @@ public class Main {
 
 
 }
-
 
