@@ -35,8 +35,7 @@ public class Main {
             if (!cats[i].isFullness()) {
                 plate.printPlateInfo();
                 cats[i].eat(plate);
-                if (!cats[i].isFullness())
-                    System.out.println(cats[i]);
+                System.out.println(cats[i]);
                 System.out.println();
             }
         }
